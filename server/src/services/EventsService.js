@@ -9,10 +9,12 @@ class EventsService {
     async getEvents() {
         const events = await dbContext.Events.find()
             .populate('creator', 'name picture')
+            .populate('ticketCount')
         return events
     }
     async getEventById(eventId) {
         const event = await dbContext.Events.findById(eventId).populate('creator', 'name picture')
+            .populate('ticketCount')
         if (!event) {
             throw new BadRequest(`(${eventId} is not a valid ID`)
         }
@@ -22,6 +24,8 @@ class EventsService {
     async createEvent(eventData) {
         const event = await dbContext.Events.create(eventData)
         await event.populate('creator', 'name picture')
+
+
         return event
     }
 
