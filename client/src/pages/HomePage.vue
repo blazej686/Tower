@@ -8,12 +8,13 @@
     </section>
 
 
-    <section class="row  p-3">
+    <section class="row p-3">
       <div class="col-12 my-3 bg-secondary card ">
         <div class="d-flex justify-content-around p-1">
+          <button @click="changeType('')" class='btn btn-outline-dark my-1 p-1'>all</button>
         <button @click="changeType(type)"
         v-for="type in types" :key="type"
-        class='btn btn-outline-dark my-1 p-2'>
+        class='btn btn-outline-dark my-1 p-1'>
         {{ type }}
         </button>
         </div>
@@ -22,8 +23,8 @@
 
 
     <section class='row p-3'>
-      <div v-for='event in events' :key='event' class='col-12 col-md-3 card shadow my-2'>
-      <EventCard />
+      <div v-for='event in events' :key='event' class='col-12 col-md-3 my-2'>
+      <EventCard :eventProp='event' />
       </div>
     </section>
   </div>
@@ -42,7 +43,7 @@ import Pop from '../utils/Pop.js';
 import { eventsService } from '../services/EventsService.js';
 export default {
     setup() {
-        const types = ['Concert', 'Convention', 'Sport', 'Digital'];
+        const types = ['concert', 'convention', 'sport', 'digital'];
         const filteredType = ref("");
 
         onMounted(() => {
@@ -79,6 +80,8 @@ export default {
             changeType(type) {
                 logger.log(type);
                 filteredType.value = type;
+                logger.log('filter.value',filteredType.value);
+                
             }
         };
     },

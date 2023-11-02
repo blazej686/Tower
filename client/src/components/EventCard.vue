@@ -1,8 +1,10 @@
 <template>
+    <router-link :to="{name: 'Event', params: { eventId: eventProp.id}}">
     <div class='col-12-md-3 card shadow my-3'>
-        <img src='' alt=''>
-        <p>{{ eventProp }}</p>
-      </div>
+            <img class="image-fluid rounded" :src='eventProp.coverImg' alt='Event Photo'>
+            <p>{{ eventProp.name }}</p>
+        </div>
+    </router-link>
 
     
 </template>
