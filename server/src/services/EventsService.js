@@ -24,6 +24,7 @@ class EventsService {
     async createEvent(eventData) {
         const event = await dbContext.Events.create(eventData)
         await event.populate('creator', 'name picture')
+        await event.populate('ticketCount')
 
 
         return event
@@ -32,10 +33,15 @@ class EventsService {
     async editEvent(eventData, userId, eventId) {
         const originalEvent = await dbContext.Events.findById(eventId)
         if (!originalEvent.creatorId) throw new BadRequest(`There is no event with ID ${eventId} `)
+
+
         if (originalEvent.creatorId != userId) {
             throw new Forbidden('Not your event to edit')
         }
 
+        if (originalEvent.isCanceled == true) {
+            throw new BadRequest(`event is canceled. You can't cancel it again`)
+        }
         originalEvent.name = eventData.name || originalEvent.name
         originalEvent.description = eventData.description || originalEvent.description
         originalEvent.coverImg = eventData.coverImg || originalEvent.coverImg
@@ -48,8 +54,19 @@ class EventsService {
         await originalEvent.save()
         return originalEvent
     }
+
+
     async cancelEvent(eventId, userId) {
         const event = await this.getEventById(eventId)
+
+        if (!event) {
+            throw new BadRequest('No event with that Id')
+        }
+        if (event.isCanceled == true) {
+            throw new BadRequest(`event is canceled. You can't cancel it again`)
+
+        }
+
         if (event.creatorId.toString() != userId) {
             throw new Forbidden(`Not your event to cancel`)
         }
@@ -58,6 +75,5 @@ class EventsService {
         return event
     }
 }
-
 
 export const eventsService = new EventsService()
