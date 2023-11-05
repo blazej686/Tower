@@ -10,10 +10,11 @@
         <p>{{ event.description }}</p>
         <p>Date of Event: {{ event.startDate }}</p>
         <p v-if="event.isCanceled" class="card bg-danger my-2">Event Canceled</p>
-        <p v-else-if="event.capacity - event.ticketCount == 0" class="card bg-primary my-2"> Sold Out</p>
+        <p v-else-if="remainingTickets == 0" class="card bg-primary my-2"> Sold Out</p>
         <div v-else class="d-flex align-items-center">
           <div>
-            <button v-if="account.id" @click="getATicket()" class="btn btn-warning rounded-pill my-2">Get A
+            <button v-if="account.id" :disabled="event.capacity - event.ticketCount == 0" @click="getATicket()"
+              class="btn btn-warning rounded-pill my-2">Get A
               Ticket</button>
           </div>
           <p class="ms-2">{{ remainingTickets }} Spots left</p>
@@ -44,17 +45,21 @@
       <div class="col-12 p-4">
         <section class="row justify-content-end">
           <h2 class="text start">Comments</h2>
-          <div class="col-10 text-end">
-            <textarea name="comment" id="comment" cols="30" rows="10" class="rounded"
-              placeholder="Enter comments here"></textarea>
-          </div>
-          <div class="col-3 my-2 text-end">
-            <button @click="addComment()" v-if="account" class="btn btn-success rounded-pill">Post Comment</button>
-          </div>
-        </section>
-        <section v-for="comment in comments" :key="comment.id" class="row card">
+          <form @submit.prevent>
+            <div class="col-10 text-end">
 
-          <div class="col-12 my-3 p-3 d-flex align-items-center">
+              <textarea v-model="formInfo.body" name="comment" id="comment" cols="30" rows="10" class="rounded"
+                placeholder="Enter comments here"></textarea>
+            </div>
+            <div class="col-3 my-2 text-end">
+              <button @click="addComment()" type="submit" v-if="account" class="btn btn-success rounded-pill">Post
+                Comment</button>
+            </div>
+          </form>
+        </section>
+        <section v-for="comment in comments" :key="comment.id" class="row card my-2">
+
+          <div class="col-12 my-3 p-3 d-flex align-items-center flex-wrap">
             <div>
               <img class="rounded-circle p-3" :src="comment.creator.picture" alt="Profile Picture"
                 :title="comment.creator.name">
@@ -160,6 +165,18 @@ export default {
         }
       },
 
+      async addComment() {
+        try {
+          const commentData = formInfo.value
+          commentData.eventId = route.params.eventId
+          await commentsService.addComment(commentData)
+          Pop.success(`You have added a comment`)
+          formInfo.value = {}
+        } catch (error) {
+          Pop.error(error)
+        }
+      },
+
       async destroyComment(commentId) {
         try {
           const wantsToDelete = await Pop.confirm(`Are you sure you want to delete this comment?`)
@@ -167,7 +184,7 @@ export default {
             return
           }
           await commentsService.destroyComment(commentId)
-          Pop.confirm(`comment has been removed`)
+          Pop.success(`comment has been removed`)
         } catch (error) {
           Pop.error(error)
         }
