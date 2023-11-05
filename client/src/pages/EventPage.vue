@@ -64,11 +64,15 @@
               <img class="rounded-circle p-3" :src="comment.creator.picture" alt="Profile Picture"
                 :title="comment.creator.name">
             </div>
+            <p>{{ comment.creator.name }}</p>
             <p>
               {{ comment.body }}
             </p>
-            <button @click="destroyComment(comment.id)" class="btn btn-danger rounded-pill ms-2"
-              v-if="comment.creatorId == account.id">Delete Comment</button>
+            <div class="text-end">
+
+              <button @click="destroyComment(comment.id)" class="btn btn-danger rounded-pill ms-2"
+                v-if="comment.creatorId == account.id">Delete Comment</button>
+            </div>
 
           </div>
         </section>

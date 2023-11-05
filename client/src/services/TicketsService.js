@@ -16,6 +16,9 @@ class TicketsService {
         const updatedTickets = (AppState.activeEvent.capacity - AppState.activeEvent.ticketCount)
         AppState.remainingTickets = updatedTickets
     }
+    async returnTicket(ticketId) {
+        const res = await api.delete(`api/tickets/${ticketId}`)
+    }
 
 }
 
