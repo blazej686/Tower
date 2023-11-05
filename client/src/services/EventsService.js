@@ -27,6 +27,10 @@ class EventsService {
         AppState.activeEvent = new Event(res.data)
     }
 
+    async getCommentsByEvent(eventId) {
+        const res = await api.get(`api/events/${eventId}/comments`)
+        AppState.comments = res.data
+    }
 }
 
 

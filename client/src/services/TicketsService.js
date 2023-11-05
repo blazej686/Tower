@@ -16,6 +16,7 @@ class TicketsService {
         const updatedTickets = (AppState.activeEvent.capacity - AppState.activeEvent.ticketCount)
         AppState.remainingTickets = updatedTickets
     }
+
 }
 
 export const ticketService = new TicketsService()

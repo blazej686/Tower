@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid p-5 bg-dark">
     <section class="row bg-secondary rounded">
-      <div class="col-4">
+      <div class="col-12 col-md-4">
         <img class=" img-fluid rounded my-2" :src="event.coverImg" alt="Event cover image">
       </div>
       <div class="col-8">
@@ -12,8 +12,10 @@
         <p v-if="event.isCanceled" class="card bg-danger my-2">Event Canceled</p>
         <p v-else-if="event.capacity - event.ticketCount == 0" class="card bg-primary my-2"> Sold Out</p>
         <div v-else class="d-flex align-items-center">
-          <button @click="getATicket()" class="btn btn-warning rounded-pill my-2">Get A
-            Ticket</button>
+          <div>
+            <button v-if="account.id" @click="getATicket()" class="btn btn-warning rounded-pill my-2">Get A
+              Ticket</button>
+          </div>
           <p class="ms-2">{{ remainingTickets }} Spots left</p>
         </div>
 
@@ -23,37 +25,46 @@
               class="btn btn-danger rounded-pill my-2">Cancel
               Event</button>
           </div>
-          <p v-if="account.id == tickets.creatorId" class="ms-2">You're Attending</p>
+          <p v-else>Sign in to see your tickets or to get one.</p>
         </div>
+        <p v-if="account.id" class="ms-2">You're Attending</p>
+        <p v-else>You don't have a ticket yet.</p>
       </div>
     </section>
 
     <section class="row bg-primary rounded p-2 my-3">
-      <div>
-        <h3>Who is Attending</h3>
-        <div v-for="ticket in tickets" :key='ticket'>
-          <div class="col-1 d-flex ">
-            <img class="img-fluid rounded-circle my-1" :src="ticket.profile.picture" alt="Profile Picture"
-              :title="ticket.profile.name">
-          </div>
-        </div>
+      <h3>Who is Attending</h3>
+      <div v-for="ticket in tickets" :key='ticket.id' class="col-3 col-md-1">
+        <img class="img-fluid rounded-circle my-1" :src="ticket.profile.picture" alt="Profile Picture"
+          :title="ticket.profile.name">
       </div>
     </section>
 
     <section class="row bg-primary rounded my-3 p-5">
-      <div class="col-6">
-        <section class="row">
-          <div class="col-3">
-            <button v-if="account" class="btn btn-success rounded-pill">Post Comment</button>
+      <div class="col-12 p-4">
+        <section class="row justify-content-end">
+          <h2 class="text start">Comments</h2>
+          <div class="col-10 text-end">
+            <textarea name="comment" id="comment" cols="30" rows="10" class="rounded"
+              placeholder="Enter comments here"></textarea>
+          </div>
+          <div class="col-3 my-2 text-end">
+            <button @click="addComment()" v-if="account" class="btn btn-success rounded-pill">Post Comment</button>
           </div>
         </section>
-        <section class="row">
-          <div class="col-3">
+        <section v-for="comment in comments" :key="comment.id" class="row card">
 
-          </div>
-          <div class="col-9 card">
-            <h2>Comments here</h2>
-            {{ comment.body }}
+          <div class="col-12 my-3 p-3 d-flex align-items-center">
+            <div>
+              <img class="rounded-circle p-3" :src="comment.creator.picture" alt="Profile Picture"
+                :title="comment.creator.name">
+            </div>
+            <p>
+              {{ comment.body }}
+            </p>
+            <button @click="destroyComment(comment.id)" class="btn btn-danger rounded-pill ms-2"
+              v-if="comment.creatorId == account.id">Delete Comment</button>
+
           </div>
         </section>
       </div>
@@ -62,23 +73,25 @@
 </template>
 
 <script>
-import { computed, onMounted, } from 'vue';
+import { computed, onMounted, ref, } from 'vue';
 import Pop from '../utils/Pop.js';
 import { eventsService } from '../services/EventsService.js';
 import { useRoute } from 'vue-router';
 import { AppState } from '../AppState.js'
 import { ticketService } from '../services/TicketsService.js';
+import { commentsService } from '../services/CommentsService.js';
 
 export default {
 
 
   setup() {
     const route = useRoute()
-
+    const formInfo = ref({})
 
     onMounted(() => {
       getEventById()
       getTicketByEventId()
+      getCommentsByEvent()
 
     })
     async function getEventById() {
@@ -101,10 +114,19 @@ export default {
       }
     }
 
-    return {
+    async function getCommentsByEvent() {
+      try {
+        const eventId = route.params.eventId
+        await eventsService.getCommentsByEvent(eventId)
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
 
+    return {
+      formInfo,
       event: computed(() => AppState.activeEvent),
-      comment: computed(() => AppState.comments),
+      comments: computed(() => AppState.comments),
       account: computed(() => AppState.account),
       tickets: computed(() => AppState.tickets),
       remainingTickets: computed(() => AppState.remainingTickets),
@@ -136,8 +158,20 @@ export default {
         } catch (error) {
           Pop.error(error)
         }
-      }
+      },
 
+      async destroyComment(commentId) {
+        try {
+          const wantsToDelete = await Pop.confirm(`Are you sure you want to delete this comment?`)
+          if (!wantsToDelete) {
+            return
+          }
+          await commentsService.destroyComment(commentId)
+          Pop.confirm(`comment has been removed`)
+        } catch (error) {
+          Pop.error(error)
+        }
+      }
     }
   }
 }
