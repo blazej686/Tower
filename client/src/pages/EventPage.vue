@@ -37,7 +37,7 @@
 
     <section class="row bg-primary rounded p-2 my-3">
       <h3>Who is Attending</h3>
-      <p v-if="tickets.accountId == account.id" class=" ms-2">You're Attending</p>
+      <p v-if="tickets.accountId == account.id" class=" ms-2">You are Attending</p>
 
       <div v-for=" ticket  in  tickets " :key='ticket.id' class="col-3 col-md-1">
         <div>
