@@ -58,6 +58,7 @@ export default {
             return
           }
           await ticketService.returnTicket(ticketId)
+          Pop.success('Ticket has been returned')
         } catch (error) {
           Pop.error(error)
         }

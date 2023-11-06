@@ -16,29 +16,36 @@
             <button v-if="account.id" :disabled="event.capacity - event.ticketCount == 0" @click="getATicket()"
               class="btn btn-warning rounded-pill my-2">Get A
               Ticket</button>
+            <div>
+
+            </div>
           </div>
           <p class="ms-2">{{ remainingTickets }} Spots left</p>
         </div>
 
-        <div v-if="account">
+        <div>
           <div v-if="!event.isCanceled">
             <button @click="cancelEvent(event)" v-if="event.creatorId == account.id"
               class="btn btn-danger rounded-pill my-2">Cancel
               Event</button>
           </div>
-          <p v-else>Sign in to see your tickets or to get one.</p>
         </div>
-        <p v-if="account.id" class="ms-2">You're Attending</p>
-        <p v-else>You don't have a ticket yet.</p>
       </div>
     </section>
 
+
+
     <section class="row bg-primary rounded p-2 my-3">
       <h3>Who is Attending</h3>
-      <div v-for="ticket in tickets" :key='ticket.id' class="col-3 col-md-1">
-        <img class="img-fluid rounded-circle my-1" :src="ticket.profile.picture" alt="Profile Picture"
-          :title="ticket.profile.name">
+      <p v-if="tickets.accountId == account.id" class=" ms-2">You're Attending</p>
+
+      <div v-for=" ticket  in  tickets " :key='ticket.id' class="col-3 col-md-1">
+        <div>
+          <img class="img-fluid rounded-circle my-1" :src="ticket.profile.picture" alt="Profile Picture"
+            :title="ticket.profile.name">
+        </div>
       </div>
+
     </section>
 
     <section class="row bg-primary rounded my-3 p-5">
@@ -52,20 +59,22 @@
                 placeholder="Enter comments here"></textarea>
             </div>
             <div class="col-3 my-2 text-end">
-              <button @click="addComment()" type="submit" v-if="account" class="btn btn-success rounded-pill">Post
-                Comment</button>
+              <button :disabled="!account.id" @click="addComment()" type="submit"
+                class="btn btn-success rounded-pill">Post
+                Comment
+              </button>
             </div>
           </form>
         </section>
-        <section v-for="comment in comments" :key="comment.id" class="row card my-2">
+        <section v-for=" comment  in  comments " :key="comment.id" class="row card my-2">
 
           <div class="col-12 my-3 p-3 d-flex align-items-center flex-wrap">
             <div>
               <img class="rounded-circle p-3" :src="comment.creator.picture" alt="Profile Picture"
                 :title="comment.creator.name">
             </div>
-            <p>{{ comment.creator.name }}</p>
-            <p>
+            <p class="p-2">{{ comment.creator.name }} </p>
+            <p class="p-2">
               {{ comment.body }}
             </p>
             <div class="text-end">
@@ -139,6 +148,8 @@ export default {
       account: computed(() => AppState.account),
       tickets: computed(() => AppState.tickets),
       remainingTickets: computed(() => AppState.remainingTickets),
+      myTickets: computed(() => AppState.myTickets),
+
 
 
       async getATicket() {
