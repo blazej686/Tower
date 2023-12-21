@@ -3,6 +3,6 @@ services:
   app:
     image: blazej686/tower:latest
     env_file:
-    - tower
+    - tower-env
     ports:
       - "3000:3000"
