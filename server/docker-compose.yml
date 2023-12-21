@@ -1,6 +1,8 @@
 version: '3'
 services:
   app:
-    image: blazej686/repo-name:latest
+    image: blazej686/tower:latest
+    env_file:
+    - tower
     ports:
       - "3000:3000"
