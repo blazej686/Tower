@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid bg-dark">
 
-    <section class="row p-3">
+    <section class="row p-3 text-center">
       <div class="col-12 my-3">
         <img class="cover-img rounded"
           src="https://images.unsplash.com/photo-1642721366091-31bc60ada871?auto=format&fit=crop&q=80&w=2074&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -13,9 +13,9 @@
     <section class="row p-3">
       <div class="col-12 my-3 bg-secondary card ">
         <div class="d-flex justify-content-around p-1">
-          <button @click="changeType('')" class='btn btn-outline-dark my-1 p-1'>all</button>
+          <button @click="changeType('')" class='btn btn-outline-dark my-1 p-1'>ALL</button>
           <button @click="changeType(type)" v-for="type in types" :key="type" class='btn btn-outline-dark my-1 p-1'>
-            {{ type }}
+            {{ type.toLocaleUpperCase() }}
           </button>
         </div>
       </div>
@@ -94,8 +94,8 @@ export default {
 .cover-img {
 
   background-position: center;
-  width: 100%;
+  width: 80%;
   object-fit: cover;
-  height: 30vh;
+  height: 20vh;
 }
 </style>
