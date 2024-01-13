@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid p-5 bg-dark">
-    <section class="row bg-secondary rounded">
+    <section v-if="event" class="row bg-secondary rounded">
       <div class="col-12 col-md-4">
         <img class=" img-fluid rounded my-2" :src="event.coverImg" alt="Event cover image">
       </div>

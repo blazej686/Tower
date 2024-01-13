@@ -50,7 +50,8 @@ export default {
     })
 
     function clearData() {
-      AppState.activeEvent = {}
+      AppState.activeEvent = null
+      AppState.comments = []
     }
     async function getEvents() {
       try {
