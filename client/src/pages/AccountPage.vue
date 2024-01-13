@@ -53,7 +53,7 @@ export default {
 
       async returnTicket(ticketId) {
         try {
-          const returnTicket = await Pop.confirm('are you sure you want to return the ticket?')
+          const returnTicket = await Pop.confirm('Are you sure you want to return the ticket?')
           if (!returnTicket) {
             return
           }
