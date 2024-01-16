@@ -4,5 +4,6 @@ services:
     image: blazej686/tower:latest
     env_file:
     - tower-env
+    restart: unless-stopped
     ports:
       - "3000:3000"

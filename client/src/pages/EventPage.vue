@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid p-5 bg-dark">
-    <section class="row bg-secondary rounded">
+    <section v-if="event" class="row bg-secondary rounded">
       <div class="col-12 col-md-4">
         <img class=" img-fluid rounded my-2" :src="event.coverImg" alt="Event cover image">
       </div>
@@ -52,13 +52,12 @@
       <div class="col-12 p-4">
         <section class="row justify-content-end">
           <h2 class="text start">Comments</h2>
-          <form @submit.prevent>
-            <div class="col-10 text-end">
-
-              <textarea v-model="formInfo.body" name="comment" id="comment" cols="30" rows="10" class="rounded"
-                placeholder="Enter comments here"></textarea>
+          <form v-if="account.id" @submit.prevent>
+            <div class="col-10 text-start">
+              <textarea v-model="formInfo.body" name="comment" id="comment" cols="30" rows="10"
+                class="rounded form-control" placeholder="Enter comments here"></textarea>
             </div>
-            <div class="col-3 my-2 text-end">
+            <div class="col-3 my-2 text-start">
               <button :disabled="!account.id" @click="addComment()" type="submit"
                 class="btn btn-success rounded-pill">Post
                 Comment
@@ -66,23 +65,22 @@
             </div>
           </form>
         </section>
-        <section v-for=" comment  in  comments " :key="comment.id" class="row card my-2">
-
-          <div class="col-12 my-3 p-3 d-flex align-items-center flex-wrap">
+        <section v-for=" comment  in  comments " :key="comment.id" class="row bg-light rounded shadow my-3">
+          <div class="col-12 my-3 p-3 d-flex align-items-center flex-wrap justify-content-around">
             <div>
-              <img class="rounded-circle p-3" :src="comment.creator.picture" alt="Profile Picture"
+              <img class="rounded-circle p-1" :src="comment.creator.picture" alt="Profile Picture"
                 :title="comment.creator.name">
+              <p class="p-1 text-center">{{ comment.creator.name }} </p>
             </div>
-            <p class="p-2">{{ comment.creator.name }} </p>
-            <p class="p-2">
-              {{ comment.body }}
-            </p>
+            <div class="comment">
+              <p class="p-2 ">
+                {{ comment.body }}
+              </p>
+            </div>
             <div class="text-end">
-
-              <button @click="destroyComment(comment.id)" class="btn btn-danger rounded-pill ms-2"
+              <button @click="destroyComment(comment.id)" class="btn btn-danger rounded-pill ms-2 text-end"
                 v-if="comment.creatorId == account.id">Delete Comment</button>
             </div>
-
           </div>
         </section>
       </div>
@@ -200,7 +198,7 @@ export default {
             return
           }
           await commentsService.destroyComment(commentId)
-          Pop.success(`comment has been removed`)
+          Pop.success(`Comment has been removed`)
         } catch (error) {
           Pop.error(error)
         }
@@ -212,4 +210,10 @@ export default {
 
 
 
-<style lang='scss' scoped></style>
+<style lang='scss' scoped>
+.comment {
+  word-wrap: normal;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>

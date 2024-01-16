@@ -16,6 +16,7 @@ class EventsService {
         return newEvent
     }
     async getEventById(eventId) {
+        AppState.activeEvent = null
         const res = await api.get(`api/events/${eventId}`)
         const newEvent = new TowerEvent(res.data)
         AppState.activeEvent = newEvent

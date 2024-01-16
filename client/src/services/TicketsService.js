@@ -18,6 +18,9 @@ class TicketsService {
     }
     async returnTicket(ticketId) {
         const res = await api.delete(`api/tickets/${ticketId}`)
+
+        AppState.tickets.splice({ id: ticketId }, 1)
+
     }
 
 }
