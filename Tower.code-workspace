@@ -1,16 +1,16 @@
 {
   "folders": [
     {
-      "path": "client",
-      "name": "client"
+      "name": "client",
+      "path": "client"
     },
     {
-      "path": "server",
-      "name": "server"
+      "name": "server",
+      "path": "server"
     },
     {
-      "path": ".github/workflows",
-      "name": "workflows"
+      "name": "workflows",
+      "path": ".github/workflows"
     }
   ],
   "settings": {
